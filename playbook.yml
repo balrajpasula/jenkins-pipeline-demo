@@ -1,0 +1,29 @@
+---
+- name: Run a simple command on localhost
+  hosts: localhost
+  connection: local # Important: Uses local connection, doesn't try to SSH to localhost
+  become: yes       # Allows tasks to run with sudo privileges if needed
+
+  tasks:
+    - name: Check free disk space
+      ansible.builtin.shell: "df -h /"
+      register: df_output
+
+    - name: Print free disk space
+      ansible.builtin.debug:
+        msg: "{{ df_output.stdout_lines }}"
+
+    - name: Create a dummy file
+      ansible.builtin.file:
+        path: /tmp/jenkins_ansible_test.txt
+        state: touch
+        mode: '0644'
+
+    - name: Verify dummy file creation
+      ansible.builtin.stat:
+        path: /tmp/jenkins_ansible_test.txt
+      register: file_stat
+
+    - name: Report dummy file status
+      ansible.builtin.debug:
+        msg: "Dummy file exists: {{ file_stat.stat.exists }}"
