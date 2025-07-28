@@ -1,4 +1,4 @@
-    // Jenkinsfile
+// Jenkinsfile
 pipeline {
     agent any
 
@@ -11,36 +11,20 @@ pipeline {
             }
         }
         stage('Clone Private Repo (with PAT)') {
-
-steps {
-
-echo "Attempting to clone a hypothetical private repo using PAT..."
-
-// 'withCredentials' block to securely access the PAT
-
-withCredentials([string(credentialsId: 'github-pat-balrajpasula', variable: 'GITHUB_PAT')]) {
-
-// Using the PAT in the git clone URL.
-
-// For a real private repo: https://github.com/balrajpasula/my-private-repo.git
-
-// Replace 'your-private-repo' with a non-existent or real private repo for testing
-
-sh 'git clone https://${GITHUB_PAT}@github.com/balrajpasula/my-test-private-repo-dummy.git dummy-private-repo-clone'
-
-sh 'ls -la dummy-private-repo-clone || true' // To verify if it managed to create the directory
-
-sh 'rm -rf dummy-private-repo-clone || true' // Clean up the cloned repo
-
-}
-
-echo "Finished cloning private repo (or tried to)."
-
-}
-
-}
-
-
+            steps {
+                echo "Attempting to clone a hypothetical private repo using PAT..."
+                // 'withCredentials' block to securely access the PAT
+                withCredentials([string(credentialsId: 'github-pat-balrajpasula', variable: 'GITHUB_PAT')]) {
+                    // Using the PAT in the git clone URL.
+                    // For a real private repo: https://github.com/balrajpasula/my-private-repo.git
+                    // Replace 'your-private-repo' with a non-existent or real private repo for testing
+                    sh 'git clone https://${GITHUB_PAT}@github.com/balrajpasula/my-test-private-repo-dummy.git dummy-private-repo-clone || true'
+                    sh 'ls -la dummy-private-repo-clone || true' // To verify if it managed to create the directory
+                    sh 'rm -rf dummy-private-repo-clone || true' // Clean up the cloned repo
+                }
+                echo "Finished cloning private repo (or tried to)."
+            }
+        }
         stage('Build Dummy App') {
             steps {
                 echo 'Simulating building a dummy application...'
@@ -59,32 +43,6 @@ echo "Finished cloning private repo (or tried to)."
                 archiveArtifacts artifacts: 'build_output.txt, test_results.txt', fingerprint: true
             }
         }
-    }
-    post {
-        always {
-            echo 'Pipeline run complete!'
-        }
-        success {
-            echo 'All stages completed successfully for your custom repo!'
-        }
-        failure {
-            echo 'Pipeline failed for your custom repo!'
-        }
-    }
-}
-
-
-// ... (previous stages) ...
-
-        stage('Archive Artifacts') {
-            steps {
-                echo 'Archiving dummy artifacts...'
-                archiveArtifacts artifacts: 'build_output.txt, test_results.txt', fingerprint: true
-            }
-        }
-        // =======================================================
-        // NEW STAGE FOR ANSIBLE DEMO HERE
-        // =======================================================
         stage('Run Ansible Playbook') {
             steps {
                 echo 'Running Ansible playbook...'
@@ -94,10 +52,7 @@ echo "Finished cloning private repo (or tried to)."
                 }
             }
         }
-        // =======================================================
-        // END NEW STAGE
-        // =======================================================
-    }
+    } // Closes the 'stages' block
     post {
         always {
             echo 'Pipeline run complete!'
@@ -109,4 +64,4 @@ echo "Finished cloning private repo (or tried to)."
             echo 'Pipeline failed for your custom repo!'
         }
     }
-}
+} // Closes the 'pipeline' block
