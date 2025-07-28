@@ -1,4 +1,4 @@
-// Jenkinsfile
+    // Jenkinsfile
 pipeline {
     agent any
 
@@ -28,9 +28,9 @@ withCredentials([string(credentialsId: 'github-pat-balrajpasula', variable: 'GIT
 
 sh 'git clone https://${GITHUB_PAT}@github.com/balrajpasula/my-test-private-repo-dummy.git dummy-private-repo-clone'
 
-sh 'ls -la dummy-private-repo-clone' // To verify if it managed to create the directory
+sh 'ls -la dummy-private-repo-clone || true' // To verify if it managed to create the directory
 
-sh 'rm -rf dummy-private-repo-clone' // Clean up the cloned repo
+sh 'rm -rf dummy-private-repo-clone || true' // Clean up the cloned repo
 
 }
 
