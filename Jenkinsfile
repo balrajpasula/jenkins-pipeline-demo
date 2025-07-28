@@ -10,6 +10,37 @@ pipeline {
                 // Add some dummy files to your repo later and list them here
             }
         }
+        stage('Clone Private Repo (with PAT)') {
+
+steps {
+
+echo "Attempting to clone a hypothetical private repo using PAT..."
+
+// 'withCredentials' block to securely access the PAT
+
+withCredentials([string(credentialsId: 'github-pat-balrajpasula', variable: 'GITHUB_PAT')]) {
+
+// Using the PAT in the git clone URL.
+
+// For a real private repo: https://github.com/balrajpasula/my-private-repo.git
+
+// Replace 'your-private-repo' with a non-existent or real private repo for testing
+
+sh 'git clone https://${GITHUB_PAT}@github.com/balrajpasula/my-test-private-repo-dummy.git dummy-private-repo-clone'
+
+sh 'ls -la dummy-private-repo-clone' // To verify if it managed to create the directory
+
+sh 'rm -rf dummy-private-repo-clone' // Clean up the cloned repo
+
+}
+
+echo "Finished cloning private repo (or tried to)."
+
+}
+
+}
+
+
         stage('Build Dummy App') {
             steps {
                 echo 'Simulating building a dummy application...'
