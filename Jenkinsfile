@@ -72,3 +72,41 @@ echo "Finished cloning private repo (or tried to)."
         }
     }
 }
+
+
+// ... (previous stages) ...
+
+        stage('Archive Artifacts') {
+            steps {
+                echo 'Archiving dummy artifacts...'
+                archiveArtifacts artifacts: 'build_output.txt, test_results.txt', fingerprint: true
+            }
+        }
+        // =======================================================
+        // NEW STAGE FOR ANSIBLE DEMO HERE
+        // =======================================================
+        stage('Run Ansible Playbook') {
+            steps {
+                echo 'Running Ansible playbook...'
+                // Ensure you are in the workspace where playbook.yml, ansible.cfg, inventory.ini are located
+                dir('./') { // 'dir' step ensures we are in the base of the cloned repo
+                    sh 'ansible-playbook -i inventory.ini playbook.yml'
+                }
+            }
+        }
+        // =======================================================
+        // END NEW STAGE
+        // =======================================================
+    }
+    post {
+        always {
+            echo 'Pipeline run complete!'
+        }
+        success {
+            echo 'All stages completed successfully for your custom repo!'
+        }
+        failure {
+            echo 'Pipeline failed for your custom repo!'
+        }
+    }
+}
